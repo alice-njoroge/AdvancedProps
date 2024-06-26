@@ -1,10 +1,33 @@
 <script setup lang="ts">
-const username = defineModel('username', {})
-const password = defineModel('password', {})
+import {ref, watch} from "vue";
+
+const props = defineProps({
+  modelValue: {
+    type: Object,
+    default() {
+      return {username: '', password: ''}
+    },
+  }
+});
+
+const clone = (obj: any) => {
+  return JSON.parse(JSON.stringify(obj))
+};
+
+const localObj = ref();
+
+watch(
+    () => props.modelValue,
+    (newValue) => {
+      localObj.value = clone(newValue);
+    },
+    { immediate: true },
+);
+
 
 const emit = defineEmits(
     {
-      submit: ({username, password}) => {
+      'update:modelValue': ({username, password}) => {
         if (username && password) return true;
         else {
           console.log("email and password must be provided")
@@ -15,7 +38,7 @@ const emit = defineEmits(
 )
 
 const handleLogin = () => {
-  emit('submit', {username, password})
+  emit('update:modelValue', clone(localObj.value))
 }
 
 </script>
@@ -24,12 +47,12 @@ const handleLogin = () => {
     <h1>Login</h1>
     <label>
       <span>Username</span>
-      <input type="text" v-model="username"/>
+      <input type="text" v-model="localObj.username"/>
     </label>
 
     <label>
       <span>Password</span>
-      <input type="password" v-model="password"/>
+      <input type="password" v-model="localObj.password"/>
     </label>
 
     <button>Login</button>

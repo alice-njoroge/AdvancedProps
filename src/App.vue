@@ -14,15 +14,13 @@ function randomize() {
     password: faker.internet.password(),
   };
 }
-const handleSubmit = (e) =>{
-  console.log("here", e);
-}
+
 </script>
 
 <template>
   <div class="page">
     <div></div>
-    <LoginForm @submit="handleSubmit" />
+    <LoginForm v-model="userData" />
 
     <div class="result">
       <h2>userData in Parent</h2>
